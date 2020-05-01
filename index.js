@@ -3,6 +3,7 @@ const { JSDOM } = require('jsdom');
 const request = require('request');
 const queryString = require('query-string');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
 const port = process.env.PORT || '3000';
@@ -36,13 +37,24 @@ function fetchList(params, form) {
     body: dataString
   };
 
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     request(options, function (error, response, body) {
       if (!error && response.statusCode == 200) {
+        // console.log(body);
         resolve(body);
+        return;
       }
+      reject();
     });
   });
+}
+
+function clean(obj) {
+  for (var propName in obj) {
+    if (obj[propName] === null || obj[propName] === undefined) {
+      delete obj[propName];
+    }
+  }
 }
 
 function getFormData(params) {
@@ -64,22 +76,24 @@ function getFormData(params) {
     // состояние ремонта [ "евро", "отл.", "хор.", "норм.", "удовл.", "плох.", "авар", "б/отд", "стр/отд" ]
     repairState: 'евро'
   };
-  return {
+  const p = {
     // 's[town_subdistrict_id][e][]': params.district || "",
-    's[area_total][ge]': params.area || 1,
-    's[area_total][le]': params.area || 2000,
-    's[building_year][ge]': params.buildingYearStart || 1950,
-    's[building_year][le]': params.buildingYearEnd || 2100,
-    's[rooms][e][]': params.rooms || 4,
+    's[area_total][ge]': params.area,
+    's[area_total][le]': params.area,
+    's[building_year][ge]': params.buildingYearStart,
+    's[building_year][le]': params.buildingYearEnd,
+    's[rooms][e][]': params.rooms,
     's[price][ge]': 1,
     's[price_m2][ge]': 1,
-    // 's[house_type][e][]': params.houseType || "стал.",
+    's[house_type][e][]': params.material,
     's[repair_state][e][]': {
-      'off': [],
+      // 'off': [],
       'all': ["евро", "отл.", "хор.", "норм.", "удовл.", "плох.", "авар", "б/отд", "стр/отд"],
       'отл.': ['отл.', 'хор.']
-    }[params.repairState] || [],
+    }[params.repair],
   };
+  clean(p);
+  return p;
 }
 
 function parseMinSummaryPrice(params) {
@@ -131,12 +145,14 @@ function parseMaxSquarePrice(params) {
   });
 }
 
-app.use(bodyParser.json({ type: 'application/*+json' }));
+app.use(cors());
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
 app.post('/calcProperty', (req, res) => {
   const params = req.body;
+  console.log(params);
   Promise.all([
     parseMinSummaryPrice(params),
     parseMaxSummaryPrice(params),
