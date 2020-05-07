@@ -25,7 +25,7 @@ function fetchList(params, form) {
     'Upgrade-Insecure-Requests': '1',
     'Pragma': 'no-cache',
     'Cache-Control': 'no-cache',
-    'Cookie': `mls_region_id=${params.region}; mls_sub_region_id=${params.district}; realt_user=e056883cf1d884bbc0e6298ca61d017e`
+    'Cookie': `mls_region_id=${params.region}; mls_sub_region_id=${params.region}; realt_user=e056883cf1d884bbc0e6298ca61d017e`
   };
 
   var dataString = `logintype=login&pid=69&permalogin=1&user=${process.env.USER_LOGIN}&pass=${process.env.USER_PASS}`;
@@ -77,7 +77,7 @@ function getFormData(params) {
     repairState: 'евро'
   };
   const p = {
-    // 's[town_subdistrict_id][e][]': params.district || "",
+    's[town_subdistrict_id][e][]': params.district,
     's[area_total][ge]': params.area,
     's[area_total][le]': params.area,
     's[building_year][ge]': params.buildingYearStart,
@@ -105,7 +105,7 @@ function parseMinSummaryPrice(params) {
       dom.window.document.querySelectorAll('.price span.alert'),
       span => span.innerHTML
     )[0] || {}).innerHTML;
-    return parseInt(priceStr);
+    return parseFloat(priceStr);
   });
 }
 
@@ -117,7 +117,7 @@ function parseMaxSummaryPrice(params) {
       dom.window.document.querySelectorAll('.price span.alert'),
       span => span.innerHTML
     )[0] || {}).innerHTML;
-    return parseInt(priceStr);
+    return parseFloat(priceStr);
   });
 }
 
@@ -129,7 +129,7 @@ function parseMinSquarePrice(params) {
       dom.window.document.querySelectorAll('.price-metr'),
       span => span.innerHTML
     )[0] || {}).innerHTML;
-    return parseInt(priceStr && priceStr.substring(0, priceStr.length - 1));
+    return parseFloat(priceStr && priceStr.substring(0, priceStr.length - 1));
   });
 }
 
@@ -141,7 +141,7 @@ function parseMaxSquarePrice(params) {
       dom.window.document.querySelectorAll('.price-metr'),
       span => span.innerHTML
     )[0] || {}).innerHTML;
-    return parseInt(priceStr && priceStr.substring(0, priceStr.length - 1));
+    return parseFloat(priceStr && priceStr.substring(0, priceStr.length - 1));
   });
 }
 
