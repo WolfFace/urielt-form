@@ -86,11 +86,12 @@ function getFormData(params) {
     's[price][ge]': 1,
     's[price_m2][ge]': 1,
     's[house_type][e][]': params.material,
-    's[repair_state][e][]': {
-      // 'off': [],
-      'all': ["евро", "отл.", "хор.", "норм.", "удовл.", "плох.", "авар", "б/отд", "стр/отд"],
-      'отл.': ['отл.', 'хор.']
-    }[params.repair],
+    's[repair_state][e][]': params.repair,
+    // 's[repair_state][e][]': {
+    //   // 'off': [],
+    //   'all': ["евро", "отл.", "хор.", "норм.", "удовл.", "плох.", "авар", "б/отд", "стр/отд"],
+    //   'отл.': ['отл.', 'хор.']
+    // }[params.repair],
   };
   clean(p);
   return p;
