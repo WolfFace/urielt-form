@@ -78,8 +78,8 @@ function getFormData(params) {
   };
   const p = {
     's[town_subdistrict_id][e][]': params.district,
-    's[area_total][ge]': +params.area - 10,
-    's[area_total][le]': +params.area + 10,
+    's[area_total][ge]': +params.area - 5,
+    's[area_total][le]': +params.area + 5,
     's[building_year][ge]': params.buildingYearStart,
     's[building_year][le]': params.buildingYearEnd,
     's[rooms][e][]': params.rooms,
